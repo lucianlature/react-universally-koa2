@@ -5,7 +5,7 @@
 // maps will give us nice stack traces.
 import 'source-map-support/register';
 
-import express from 'express';
+import Koa from 'koa';
 import compression from 'compression';
 import { resolve as pathResolve } from 'path';
 import appRootDir from 'app-root-dir';
@@ -18,7 +18,7 @@ import projConfig from '../../config/project';
 import envConfig from '../../config/environment';
 
 // Create our express based server.
-const app = express();
+const app = new Koa();
 
 // Don't expose any software information to potential hackers.
 app.disable('x-powered-by');
