@@ -6,6 +6,7 @@
 import 'source-map-support/register';
 
 import Koa from 'koa';
+import mount from 'koa-mount';
 import compression from 'compression';
 import { resolve as pathResolve } from 'path';
 import appRootDir from 'app-root-dir';
