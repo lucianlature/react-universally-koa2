@@ -11,7 +11,7 @@
  - [Overview](https://github.com/ctrlplusb/react-universally#overview)
  - [Project Configuration](https://github.com/ctrlplusb/react-universally#project-configuration)
  - [Environment Configuration](https://github.com/ctrlplusb/react-universally#environment-configuration)
- - [Koa Server Security](https://github.com/ctrlplusb/react-universally#koa2-server-security)
+ - [Express Server Security](https://github.com/ctrlplusb/react-universally#express-server-security)
  - [Offline Ready](https://github.com/ctrlplusb/react-universally#offline-ready)
  - [Extensions](https://github.com/ctrlplusb/react-universally#extensions)
  - [3rd Party Extensions](https://github.com/ctrlplusb/react-universally#3rd-party-extensions)
@@ -37,8 +37,8 @@ This starter kit contains all the build tooling and configuration you need to ki
   - 🤖 Optimised Webpack builds via HappyPack and an auto generated Vendor DLL for smooth development experiences.
   - ✂️ Code splitting - easily define code split points in your source using `code-split-component`.
   - 🍃 Tree-shaking, courtesy of Webpack.
-  - 🚄 `Koa2` the next generation web framework for node.js with support for ES7 `async/await`.
-  - 👮 Security on the `Koa2` server using `helmet`.
+  - 🚄 `express` server.
+  - 👮 Security on the `express` server using `helmet` and `hpp`.
   - 👀 `react` as the view.
   - 🔀 `react-router` v4 as the router.
   - 🖌 Very basic CSS support - it's up to you to extend it with CSS Modules etc.
@@ -98,16 +98,16 @@ We generally recommend that you don't persist any environment configuration valu
 
 As stated before, the application has been configured to accept a mix-match of sources for the environment variables. i.e. you can provide some/all of the environment variables via the `.env` file, and others via the cli/host (e.g. `FOO=bar npm run build`). This gives you greater flexibility and grants you the opportunity to control the provision of sensitive values (e.g. db connection string).  Please do note that "env" file values will take preference over any values provided by the host/CLI.
 
-## Koa2 Server Security
+## Express Server Security
 
-We make use of the `helmet` middleware libraries to provide a fairly advanced security configuration for our koa server, attempting to follow best practices. If you are unfamiliar with CSPs then I highly recommend that you do some reading on the subject:
+We make use of the `helmet` and `hpp` middleware libraries to provide a fairly advanced security configuration for our express server, attempting to follow best practices. If you are unfamiliar with CSPs then I highly recommend that you do some reading on the subject:
 
   - https://content-security-policy.com/
   - https://developers.google.com/web/fundamentals/security/csp/
   - https://developer.mozilla.org/en/docs/Web/Security/CSP
   - https://helmetjs.github.io/docs/csp/
 
-If you are relying on scripts/styles/assets from CDN or from any other server/application that is not hosted on the same URL as your application then you will need to explicitly add the respective CSN/Server URLs to the Content Security Policy within the koa configuration.  For example you can see I have had to add the polyfill.io CDN in order to allow us to use the polyfill script.
+If you are relying on scripts/styles/assets from CDN or from any other server/application that is not hosted on the same URL as your application then you will need to explicitly add the respective CSN/Server URLs to the Content Security Policy within the express configuration.  For example you can see I have had to add the polyfill.io CDN in order to allow us to use the polyfill script.
 
 You may find CSPs annoying at first, but it is a great habit to build. The CSP configuration is an optional item for helmet, however you should not remove it without making a serious consideration that you do not require the added security.
 
