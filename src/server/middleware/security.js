@@ -5,8 +5,6 @@ import uuid from 'uuid';
 import hpp from 'hpp';
 import helmet from 'koa-helmet';
 import compose from 'koa-compose';
-import c2k from 'koa-connect';
-import convert from 'koa-convert';
 import projConfig from '../../../config/project';
 import envConfig from '../../../config/environment';
 
