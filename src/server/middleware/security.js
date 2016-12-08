@@ -1,11 +1,16 @@
 /* @flow */
 
+import type { KoaContext as $KoaContext } from 'koa-flow-declarations/KoaContext';
 import uuid from 'uuid';
 import hpp from 'hpp';
-import helmet from 'helmet';
-import type { Middleware, $Request, $Response, NextFunction } from 'express';
+import helmet from 'koa-helmet';
+import compose from 'koa-compose';
+import c2k from 'koa-connect';
+import convert from 'koa-convert';
 import projConfig from '../../../config/project';
 import envConfig from '../../../config/environment';
+
+const nonceUUID = uuid();
 
 const cspConfig = {
   directives: {
@@ -20,8 +25,7 @@ const cspConfig = {
       // This is useful for guarding your application whilst allowing an inline
       // script to do data store rehydration (redux/mobx/apollo) for example.
       // @see https://helmetjs.github.io/docs/csp/
-      // $FlowFixMe
-      (req, res) => `'nonce-${res.locals.nonce}'`,
+      `'nonce-${nonceUUID}'`,
     ],
     styleSrc: ["'self'", "'unsafe-inline'", 'blob:'],
     imgSrc: ["'self'", 'data:'],
@@ -55,18 +59,18 @@ if (process.env.NODE_ENV === 'development') {
 // Attach a unique "nonce" to every response.  This allows use to declare
 // inline scripts as being safe for execution against our content security policy.
 // @see https://helmetjs.github.io/docs/csp/
-function nonceMiddleware(req: $Request, res: $Response, next: NextFunction) {
-  // $FlowFixMe
-  res.locals.nonce = uuid(); // eslint-disable-line no-param-reassign
-  next();
+async function nonceMiddleware(ctx: $KoaContext, next: Function) {
+  let { state, request } = ctx;
+  state.nonce = nonceUUID; // eslint-disable-line no-param-reassign
+  await next();
 }
 
-const securityMiddleware = [
+const securityMiddleware = compose([
   nonceMiddleware,
 
   // Prevent HTTP Parameter pollution.
-  // @see http://bit.ly/2f8q7Td
-  hpp(),
+  // @see http://bit.ly/2f8q7Td 
+  // hpp, <-- no HPP npm module available for Koa2
 
   // The xssFilter middleware sets the X-XSS-Protection header to prevent
   // reflected XSS attacks.
@@ -109,6 +113,6 @@ const securityMiddleware = [
   // not remove it without making a serious consideration that you do not
   // require the added security.
   helmet.contentSecurityPolicy(cspConfig),
-];
+]);
 
-export default (securityMiddleware : Array<Middleware>);
+export default (securityMiddleware : Function);

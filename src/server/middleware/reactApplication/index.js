@@ -15,15 +15,14 @@ import envConfig from '../../../../config/environment';
  * supporting server side rendering of the application.
  */
 async function reactApplicationMiddleware(ctx: KoaContext, next: Function) {
-  const { request, response } = ctx;
-  const nonce = '';
-  /*
+  const { request, response, state } = ctx;
+
   // We should have had a nonce provided to us.  See the server/index.js for
   // more information on what this is.
-  if (typeof response.locals.nonce !== 'string') {
+  if (typeof state.nonce !== 'string') {
     throw new Error('A "nonce" value has not been attached to the response');
   }
-  const nonce = response.locals.nonce;
+  const nonce = state.nonce;
 
   // It's possible to disable SSR, which can be useful in development mode.
   // In this case traditional client side only rendering will occur.
@@ -40,7 +39,7 @@ async function reactApplicationMiddleware(ctx: KoaContext, next: Function) {
     response.status(200).send(html);
     return;
   }
-  */  
+  
   // First create a context for <ServerRouter>, which will allow us to
   // query for the results of the render.
   const reactRouterContext = createServerRenderContext();
