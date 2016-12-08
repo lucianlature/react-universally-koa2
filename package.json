@@ -52,6 +52,7 @@
     "koa-compress": "2.x",
     "koa-helmet": "2.x",
     "koa-mount": "2.x",
+    "koa-send": "^3.2.0",
     "koa-static": "next",
     "normalize.css": "5.0.0",
     "offline-plugin": "4.5.3",

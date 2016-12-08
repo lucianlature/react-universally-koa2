@@ -28,7 +28,6 @@ app.use(security);
 // Gzip compress the responses.
 app.use(compression());
 
-/*
 // When in production mode, we will serve our service worker which was generated
 // by the offline-plugin webpack plugin. See the webpack plugins section for
 // more information.
@@ -49,7 +48,6 @@ if (process.env.NODE_ENV === 'production') {
   //   },
   // );
 }
-*/
 
 // Configure serving of our client bundle.
 app.use(mount(projConfig.bundles.client.webPath, clientBundle));

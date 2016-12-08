@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { KoaContext } from 'koa-flow-declarations/KoaContext';
+import type { KoaContext as $KoaContext } from 'koa-flow-declarations/KoaContext';
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { ServerRouter, createServerRenderContext } from 'react-router';
@@ -14,7 +14,7 @@ import envConfig from '../../../../config/environment';
  * An express middleware that is capabable of service our React application,
  * supporting server side rendering of the application.
  */
-async function reactApplicationMiddleware(ctx: KoaContext, next: Function) {
+async function reactApplicationMiddleware(ctx: $KoaContext, next: Function) {
   const { request, response, state } = ctx;
 
   // We should have had a nonce provided to us.  See the server/index.js for
