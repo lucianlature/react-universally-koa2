@@ -73,7 +73,7 @@ if (process.env.NODE_ENV === 'development') {
 // inline scripts as being safe for execution against our content security policy.
 // @see https://helmetjs.github.io/docs/csp/
 async function nonceMiddleware(ctx: $KoaContext, next: Function) {
-  let { state, request } = ctx;
+  let { state } = ctx;
   state.nonce = nonceUUID; // eslint-disable-line no-param-reassign
   await next();
 }
