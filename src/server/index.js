@@ -16,8 +16,8 @@ import security from './middleware/security';
 import clientBundle from './middleware/clientBundle';
 import serviceWorker from './middleware/serviceWorker';
 import errorHandlers from './middleware/errorHandlers';
-import projConfig from '../../config/project';
-import envConfig from '../../config/environment';
+import projConfig from '../../config/private/project';
+import envConfig from '../../config/private/environment';
 
 // Create our express based server.
 const app = new Koa();
@@ -35,18 +35,6 @@ app.use(compression());
 // application for it to work correctly.
 if (process.env.NODE_ENV === 'production') {
   app.use(mount(`/${projConfig.serviceWorker.fileName}`, serviceWorker));
-  // app.get(
-  //   '/manifest.appcache',
-  //   (req, res, next) => {
-  //     res.sendFile(
-  //       pathResolve(
-  //         appRootDir.get(),
-  //         projConfig.bundles.client.outputPath,
-  //         'appcache/manifest.appcache',
-  //       ),
-  //     );
-  //   },
-  // );
 }
 
 // Configure serving of our client bundle.
@@ -59,10 +47,10 @@ app.use(mount('/', serve(pathResolve(appRootDir.get(), projConfig.publicAssetsPa
 app.use(mount('/', reactApplication));
 
 // Error Handler middlewares.
-// app.use(...errorHandlers);
+app.use(errorHandlers);
 
 // Create an http listener for our express app.
-const listener = app.listen(envConfig.port, () =>
+const listener = app.listen(envConfig.port, envConfig.host, () =>
   console.log(`Server listening on port ${envConfig.port}`),
 );
 

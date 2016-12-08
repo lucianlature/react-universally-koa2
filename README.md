@@ -1,7 +1,7 @@
 <p align='center'>
   <h1 align='center'>React, Universally</h1>
   <p align='center'><img width='150' src='https://raw.githubusercontent.com/ctrlplusb/assets/master/logos/react-universally.png' /></p>
-  <p align='center'>A starter kit giving you the minimum requirements for a production ready universal react application.</p>
+  <p align='center'>A starter kit giving you the minimum requirements for a modern universal React application.</p>
 </p>
 
 ## TOC
@@ -12,7 +12,7 @@
  - [Project Configuration](https://github.com/ctrlplusb/react-universally#project-configuration)
  - [Environment Configuration](https://github.com/ctrlplusb/react-universally#environment-configuration)
  - [Express Server Security](https://github.com/ctrlplusb/react-universally#express-server-security)
- - [Progressive Web Application Ready](https://github.com/ctrlplusb/react-universally#progressive-web-application-ready)
+ - [Offline Ready](https://github.com/ctrlplusb/react-universally#offline-ready)
  - [Extensions](https://github.com/ctrlplusb/react-universally#extensions)
  - [3rd Party Extensions](https://github.com/ctrlplusb/react-universally#3rd-party-extensions)
  - [Project Structure](https://github.com/ctrlplusb/react-universally#project-structure)
@@ -22,32 +22,33 @@
 
 ## About
 
-This starter kit contains all the build tooling and configuration you need to kick off your next universal react project, whilst containing a minimal "project" set up allowing you to make your own architecture decisions (redux/mobx etc).
+This starter kit contains all the build tooling and configuration you need to kick off your next universal React project, whilst containing a minimal "project" set up allowing you to make your own architecture decisions (Redux/MobX etc).
 
 ## Features
 
   - 🌍 Server side rendering.
-  - 🐘 Long term caching of assets.
-  - ⚰ Offline support.
-  - 🔥 Extreme live development - hot reloading of client/server source, with high level of error tolerance, alongside a HappyPack and Vendor DLL (courtesy of @strues).
+  - ⚰ Offline support via a Service Worker.
+  - 🐘 Long term browser caching of assets with automated cache invalidation.
+  - 📦 All source is bundled using Webpack v2.
+  - 🚀 Full ES2017+ support - use the exact same JS syntax across the entire project (src/tools/config). No more folder context switching!
+  - 🔧 Centralised project configuration and environment settings.
+  - 🔥 Extreme live development - hot reloading of ALL changes to client/server source, with auto development server restarts when your application configuration changes.  All this with a high level of error tolerance and verbose logging to the console.
+  - ⛑ SEO friendly - `react-helmet` provides control of the page title/meta/styles/scripts from within your components.
+  - 🤖 Optimised Webpack builds via HappyPack and an auto generated Vendor DLL for smooth development experiences.
+  - ✂️ Code splitting - easily define code split points in your source using `code-split-component`.
+  - 🍃 Tree-shaking, courtesy of Webpack.
   - 🚄 `express` server.
   - 👮 Security on the `express` server using `helmet` and `hpp`.
   - 👀 `react` as the view.
   - 🔀 `react-router` v4 as the router.
-  - ⛑ `react-helmet` allowing control of the page title/meta/styles/scripts from within your components. Direct control for your SEO needs.
   - 🖌 Very basic CSS support - it's up to you to extend it with CSS Modules etc.
   - 🏜 Asset bundling support. e.g. images/fonts.
-  - 🚀 Full ES2017+ support, use the exact same JS syntax across the entire project (src/tools/config).
-  - 📦 All source bundled using `webpack` v2.
-  - ✂️ Code splitting - `code-split-component` provides you declarative code splitting based on your routes.
-  - 🍃 Tree-shaking, courtesy of `webpack`.
   - ✔️ Type checking via Flow, a beautiful and unobtrusive type framework.
 
       __NOTE:__ Flow is a completely optional feature.  The flow type annotations get ripped out of the source by the Webpack build step. You have no obligation to use flow within your code and can happily code without applying it to any new code.  I do highly recommend you try it out though. :)
 
       If you don't really don't want to use flow then you can run `npm run flow:remove`. This will make it as though flow never existed within the project.
-  - 🎛 A development and optimised production configuration.
-  - 🔧 Centralised project customisation and environment.
+  - 🎛 Preconfigured to support development and optimised production builds.
   - 👼 Airbnb's ESlint configuration.
   - ❤️ Preconfigured to deploy to `now` with a single command.
 
@@ -66,11 +67,22 @@ Note: Given that we are bundling our server code I have included the `source-map
 
 We have centralised the configuration of the project to be contained within the `./config` folder.  The files within this folder can be described as follows:
 
-  - `environment.js` - parses and provides the environment specific values which will be used at runtime.  See the "Environment configuration" section below for more information.
-  - `plugins.js` - provides useful plugin points into the internals of the project toolchain allowing you to easily manage/extend the Babel and Webpack configurations.
-  - `project.js` - global project configuration options, with the capability to easily define new additional "node" target bundles (for e.g. an "apiServer").
+ - `private` - all configuration in here is considered "private"; i.e. don't bundle with the client.
+    - `environment.js` - parses and provides the environment specific values which will be used at runtime.  See the "Environment configuration" section below for more information.
+    - `plugins.js` - provides useful plugin points into the internals of the project toolchain allowing you to easily manage/extend the Babel and Webpack configurations.
+    - `project.js` - global project configuration options, with the capability to easily define new additional "node" target bundles (for e.g. an "apiServer").
+ - `public` - all configuration in here is safe to use anywhere; i.e. including client.
+   - `htmlPage.js` - provides a centralised configuration for the html pages used by the server rendering process and the service worker (for offline support).
 
 In addition to having an easy "go to" location for configuration we hope that this centralised strategy will allow you to easily pull and merge any updates from the starter kit origin without having to pick apart configuration customisations you may have had to scatter throughout the tools folder.
+
+### Easily add an "API" bundle
+
+A fairly common requirement for a project that scales is to create additional servers bundles, e.g. an API server.
+
+Instead of requiring you to hack the Webpack configuration we have have provided a section within the centralised project configuration that allows you to easily declare additional bundles.  You simply need to provide the source, entry, and output paths - we take care of the rest.  
+
+_IMPORTANT:_ One further requirement for this feature is that within your new server bundle you export the created http listener.  This exported listener will be used by the development server so that it can automatically restart your server any time the source files for it change.
 
 ## Environment Configuration
 
@@ -99,47 +111,41 @@ If you are relying on scripts/styles/assets from CDN or from any other server/ap
 
 You may find CSPs annoying at first, but it is a great habit to build. The CSP configuration is an optional item for helmet, however you should not remove it without making a serious consideration that you do not require the added security.
 
-## Progressive Web Application Ready
+## Offline Ready
 
-We make use of the [`offline-plugin`](https://github.com/NekR/offline-plugin), providing you with a service worker to bridge that gap into a progressive web application that has aggressive caching and simple offline support.
+We make use of the [`offline-plugin`](https://github.com/NekR/offline-plugin), providing you with a Service Worker configuration that supports offline rendering of your application.
 
 ## Extensions
 
-We provide extensions to this project within branches. The stable branches are detailed below.
+We provide extensions to this project within branches. The stable branches are detailed below:
 
-### [`redux`](https://github.com/ctrlplusb/react-universally/tree/redux)
-
-Provides you with an example of how to integrate redux into this starter kit, as well as how to deal with issues such a prefetching of data for server rendering.
-
-## 3rd Party Extensions
-
-### [`advanced-boilerplate`](https://github.com/sebastian-software/advanced-boilerplate)
-
-A This boilerplate provides extended features on top of `react-universally` such as CSS Support with CSS modules alongside a flexible full PostCSS chain for advanced transformations e.g. autoprefixer.
+__COMING SOON__
 
 ## Project Structure
 
 ```
 /
-|- config // Centralised project configuration
-|  |- project      // Project configuration
-|  |- environment  // Environment variable parsing/support
-|  |- plugins      // Plugin points for tool internals
+|- config // Centralised project configuration.
+|  |- public // insensitive information. i.e. safe for bundling in client.
+|     |- htmlPage     // Customise meta tags for the online/offline html pages.
+|  |- private  // Sensitive configuration. i.e. don't expose publicly.
+|     |- project      // Project configuration.
+|     |- environment  // Environment variable parsing/support.
+|     |- plugins      // Plugin points for tool internals.
 |
 |- build // The target output dir for our build commands.
 |  |- client // The built client module.
-|  |- server // The built server module
+|  |- server // The built server module.
 |
-|- src  // All the source code
-|  |- server // The server bundle entry and specific source
-|  |- client // The client bundle entry and specific source
-|  |- shared // The shared code between the bundles)
+|- src  // All the source code.
+|  |- server // The server bundle entry and specific source.
+|  |- client // The client bundle entry and specific source.
+|  |- shared // The shared code between the bundles.
 |
 |- tools
-|  |- development // Tool for hot reloading development
-|  |
+|  |- development // Development server.
 |  |- webpack
-|     |- configFactory.js  // Webpack configuration builder
+|     |- configFactory.js  // Webpack configuration builder.
 |
 |- .env_example // An example from which to create your own .env file.
 ```
@@ -200,7 +206,7 @@ Executes `eslint` (using the Airbnb config) against the src folder. Alternativel
 
 ### `npm run analyze`
 
-Creates an webpack-bundle-analyze session against the production build of the client bundle.  This is super handy for figuring out just exactly what dependencies are being included within your bundle.  Try clicking around, it's an awesome tool.
+Creates an 'webpack-bundle-analyze' session against the production build of the client bundle.  This is super handy for figuring out just exactly what dependencies are being included within your bundle.  Try clicking around, it's an awesome tool.
 
 ### `npm run flow`
 
@@ -208,7 +214,7 @@ Executes `flow-bin`, performing flow based type checking on the source.  If you 
 
 ### `npm run flow:defs`
 
-Installs the flow type definitions for the projects depenedencies from the official "flow-typed" repository.
+Installs the flow type definitions for the projects dependencies from the official "flow-typed" repository.
 
 ### `npm run flow:report`
 
@@ -222,6 +228,37 @@ __Warning:__ This is a destructive behaviour - it modifies your actual source fi
 
 
 ## Troubleshooting ##
+
+___Q:___ __After adding a module that contains SASS/CSS (e.g. material-ui or bootstrap) the hot development server fails__
+
+The development server has been configured to automatically generate a "Vendor DLL" containing all the modules that are used in your source.  We do this so that any rebuilds by Webpack are optimised as it need not bundle all your project's dependencies every time.  This works great most of the time, however, if you introduce a module that depends on one of your Webpack loaders (e.g. CSS/Images) then you need to make sure that you add the respective module to the vendor DLL ignores list within your project configuration.
+
+For example, say you added `bootstrap` and were referencing the CSS file like so in your client bundle:
+
+```js
+import 'bootstrap/dist/css/bootstrap.css';
+```
+
+You would then need to edit `./config/private/project.js` and make the following adjustment:
+
+```js
+export default {
+  ...
+  bundles: {
+    client: {
+      ...,
+      devVendorDLL: {
+        ...,
+        ignores: ['bootstrap/dist/css/bootstrap.css']
+      }  
+    },
+    ...
+  }
+  ...
+}
+```
+
+This ensures that the respective import will be ignored when generating the development "Vendor DLL" which means it will get processed by Webpack and included successfully in your project.
 
 ___Q:___ __My project fails to build and execute when I deploy it to my host__
 

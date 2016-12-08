@@ -5,8 +5,9 @@ import uuid from 'uuid';
 import hpp from 'hpp';
 import helmet from 'koa-helmet';
 import compose from 'koa-compose';
-import projConfig from '../../../config/project';
-import envConfig from '../../../config/environment';
+import projConfig from '../../../config/private/project';
+import envConfig from '../../../config/private/environment';
+
 
 const nonceUUID = uuid();
 
@@ -25,8 +26,18 @@ const cspConfig = {
       // @see https://helmetjs.github.io/docs/csp/
       `'nonce-${nonceUUID}'`,
     ],
-    styleSrc: ["'self'", "'unsafe-inline'", 'blob:'],
-    imgSrc: ["'self'", 'data:'],
+    styleSrc: [
+      "'self'",
+      // Webpack generates JS that loads our CSS, so this is needed:
+      "'unsafe-inline'",
+      'blob:',
+    ],
+    imgSrc: [
+      "'self'",
+      // If you use Base64 encoded images (i.e. inlined images), then you will
+      // need the following:
+      // 'data:',
+    ],
     // Note: Setting this to stricter than * breaks the service worker. :(
     // I can't figure out how to get around this, so if you know of a safer
     // implementation that is kinder to service workers please let me know.
@@ -40,18 +51,22 @@ const cspConfig = {
 
 // Add any additional CSP from the static config.
 Object.keys(projConfig.cspExtensions).forEach((key) => {
-  cspConfig.directives[key] = [
-    ...cspConfig.directives[key],
-    ...projConfig.cspExtensions[key],
-  ];
+  if (cspConfig.directives[key]) {
+    cspConfig.directives[key] = cspConfig.directives[key]
+      .concat(projConfig.cspExtensions[key]);
+  } else {
+    cspConfig.directives[key] = projConfig.cspExtensions[key];
+  }
 });
 
 if (process.env.NODE_ENV === 'development') {
   // When in development mode we need to add our secondary express server that
   // is used to host our client bundle to our csp config.
-  Object.keys(cspConfig.directives).forEach(directive =>
-    cspConfig.directives[directive].push(`${envConfig.host}:${envConfig.clientDevServerPort}`),
-  );
+  Object.keys(cspConfig.directives).forEach((directive) => {
+    cspConfig.directives[directive].push(
+      `${envConfig.host}:${envConfig.clientDevServerPort}`,
+    );
+  });
 }
 
 // Attach a unique "nonce" to every response.  This allows use to declare
@@ -68,7 +83,7 @@ const securityMiddleware = compose([
 
   // Prevent HTTP Parameter pollution.
   // @see http://bit.ly/2f8q7Td 
-  // hpp, <-- no HPP npm module available for Koa2
+  // hpp, <-- no HPP npm module available for Koa2!
 
   // The xssFilter middleware sets the X-XSS-Protection header to prevent
   // reflected XSS attacks.

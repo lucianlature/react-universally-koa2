@@ -5,7 +5,7 @@
 import fs from 'fs';
 import { resolve as pathResolve } from 'path';
 import appRootDir from 'app-root-dir';
-import projConfig from '../../../../config/project';
+import projConfig from '../../../../config/private/project';
 
 const assetsFilePath = pathResolve(
   appRootDir.get(),
@@ -19,7 +19,16 @@ if (!fs.existsSync(assetsFilePath)) {
   );
 }
 
-const assetsJSON = JSON.parse(fs.readFileSync(assetsFilePath, 'utf8'));
+const readAssetsJSONFile = () => JSON.parse(fs.readFileSync(assetsFilePath, 'utf8'));
+const assetsJSON = readAssetsJSONFile();
+const assetsJSONResolver = () => (
+  process.env.NODE_ENV === 'development'
+    // In development mode we always read the assets json file from disk to avoid
+    // any cases where an older version gets cached.
+    ? readAssetsJSONFile()
+    // Otherwise we return the initially parsed JSON file.
+    : assetsJSON
+);
 
 /**
  * Retrieves the js/css for the named chunks that belong to our client bundle.
@@ -36,7 +45,7 @@ const assetsJSON = JSON.parse(fs.readFileSync(assetsFilePath, 'utf8'));
  */
 function getAssetsForClientChunks(chunks: Array<string>) {
   return chunks.reduce((acc, chunkName) => {
-    const chunkAssets = assetsJSON[chunkName];
+    const chunkAssets = assetsJSONResolver()[chunkName];
     if (chunkAssets) {
       if (chunkAssets.js) {
         acc.js.push(chunkAssets.js);

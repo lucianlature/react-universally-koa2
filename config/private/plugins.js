@@ -8,7 +8,7 @@
 // configuration adjustments.  Additionally it helps to make merging
 // from the origin starter kit a bit easier.
 
-import type { BuildOptions } from '../tools/types';
+import type { BuildOptions } from '../../tools/types';
 
 export default {
   // Plugins for the bundles/bundling process.
@@ -53,7 +53,7 @@ export default {
             ? 'react-hot-loader/babel'
             : null,
           // We are adding the experimental "object rest spread" syntax as
-          // it is super useful.  There is a caviat with the plugin that
+          // it is super useful.  There is a caveat with the plugin that
           // requires us to include the destructuring plugin too.
           'transform-object-rest-spread',
           'transform-es2015-destructuring',
