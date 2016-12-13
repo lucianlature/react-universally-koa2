@@ -14,11 +14,11 @@
  - [Express Server Security](https://github.com/ctrlplusb/react-universally#express-server-security)
  - [Offline Ready](https://github.com/ctrlplusb/react-universally#offline-ready)
  - [Extensions](https://github.com/ctrlplusb/react-universally#extensions)
- - [3rd Party Extensions](https://github.com/ctrlplusb/react-universally#3rd-party-extensions)
  - [Project Structure](https://github.com/ctrlplusb/react-universally#project-structure)
  - [Project Dependencies](https://github.com/ctrlplusb/react-universally#project-dependencies)
  - [Deploy your very own Server Side Rendering React App in 4 easy steps](https://github.com/ctrlplusb/react-universally#deploy-your-very-own-server-side-rendering-react-app-in-4-easy-steps)
  - [npm script commands](https://github.com/ctrlplusb/react-universally#npm-script-commands)
+ - [FAQs](https://github.com/ctrlplusb/react-universally#faqs)
 
 ## About
 
@@ -117,9 +117,11 @@ We make use of the [`offline-plugin`](https://github.com/NekR/offline-plugin), p
 
 ## Extensions
 
-We provide extensions to this project within branches. The stable branches are detailed below:
+We welcome extended versions in the form of repositories.  Please PR the link to yours for me to add it.
 
-__COMING SOON__
+ - [`react-universally-redux`](https://github.com/ctrlplusb/react-universally-redux) - Adds Redux with simple custom data prefetching technique that works for the server and client.
+ - [`react-universally-apollo`](https://github.com/ctrlplusb/react-universally-apollo) - Adds the Apollo Stack (i.e. Graphql).
+ - [`react-universally-jest`](https://github.com/ctrlplusb/react-universally-jest) - Adds the Jest testing framework.
 
 ## Project Structure
 
@@ -227,7 +229,7 @@ For those of us not wanting to use `flow`. Running this command removes everythi
 __Warning:__ This is a destructive behaviour - it modifies your actual source files. Please make sure you commit any existing changes to your src before running this command.
 
 
-## Troubleshooting ##
+## FAQs ##
 
 ___Q:___ __After adding a module that contains SASS/CSS (e.g. material-ui or bootstrap) the hot development server fails__
 
@@ -267,3 +269,47 @@ You two options to fix this:
 
  1. Prebuild your project and then deploy it along with the build output.
  2. Change your host configuration so that it will install the `devDependencies` too.  In the case of Heroku for example see [here](https://devcenter.heroku.com/articles/nodejs-support#devdependencies).
+
+___Q:___ __How do I keep my project up to date with changes/fixes made on `react-universally`?__
+
+This project wants to be a base starter kit allowing you to mould it as you like for each of your project's needs.  This comes with the trade off that updates/fixes will be more "involved" to apply.
+
+One example workflow is:
+
+```bash
+# First clone this repo
+git clone https://github.com/ctrlplusb/react-universally my-project
+
+# Go into your project
+cd my-project
+
+# Now rename the "origin" git remote to "upstream"
+git remote rename origin upstream
+
+# I would then recommend creating a hosted repository for your
+# project (e.g. on github, or a free private on bitbucket)
+# Then add your newly created repository as the "origin"
+# remote like so: (for example, you need to put in the proper url)
+git remote add origin ssh://git@bitbucket.org/Kimel1/my-project.git
+
+# Then push the master branch content to the new "origin" remote
+git push -u origin master
+
+# You can now code/commit/push to origin as normal.
+# If you want to at some stage get new changes from the
+# react-universally project, then do something like this:
+
+# First fetch the latest changes
+git fetch upstream
+
+# Then merge them into your project
+git merge upstream/master
+
+# You will have to deal with merge commits most likely
+# I would get comfortable with a good merge tool. I use
+# Atom Editor and they have a cool package called
+# merge-conflicts which does the job okay.
+# After you have completed the merge you can commit
+# and continue
+git commit
+```

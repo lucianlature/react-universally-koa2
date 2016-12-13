@@ -32,7 +32,7 @@ export default {
   // Sometimes you don't want this to happen to aid in debugging complex
   // problems.  Having this configuration flag here allows you to quickly
   // toggle the feature.
-  optimizeProductionBuilds: false,
+  optimizeProductionBuilds: true,
 
   // Do you want to included source maps (will be served as seperate files)
   // for production builds?
@@ -144,6 +144,16 @@ export default {
       devVendorDLL: {
         // Enabled?
         enabled: true,
+
+        // Any source files that match the following regular expressions will
+        // not be considered when trying to find out which modules are used
+        // for the client bundle.
+        // Typically you want to exclude test files as they may contain
+        // modules which are node specific.
+        srcFileIgnores: [
+          /.*\.test\.js$/ig,
+          /.*-test\.js$/i,
+        ],
 
         // It is also possible that some modules require specific
         // webpack loaders in order to be processed (e.g. CSS/SASS etc).

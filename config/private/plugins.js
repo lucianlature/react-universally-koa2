@@ -1,3 +1,5 @@
+/* @flow */
+
 // Project Plugins
 //
 // These plugin definitions provide you with advanced hooks into customising
@@ -23,6 +25,12 @@ export default {
       const { target, mode } = buildOptions;
 
       return {
+        // We need to ensure that we do this otherwise the babelrc will
+        // get interpretted and for the current configuration this will mean
+        // that it will kill our webpack treeshaking feature as the modules
+        // transpilation has not been disabled within in.
+        babelrc: false,
+
         presets: [
           // JSX
           'react',
@@ -47,6 +55,7 @@ export default {
             ? ['env', { targets: { node: true }, modules: false }]
             : null,
         ].filter(x => x != null),
+
         plugins: [
           // Required to support react hot loader.
           mode === 'development'
@@ -82,11 +91,11 @@ export default {
               // so we will disable it (which ensures synchronously
               // behaviour on the CodeSplit instances).
               disabled: mode === 'development',
-              // For our server bundle we will set the role as being 'server'
+              // For our server bundle we will set the mode as being 'server'
               // which will ensure that our code split components can be
               // resolved synchronously, being much more helpful for
               // pre-rendering.
-              role: target,
+              mode: target,
             },
           ],
         ].filter(x => x != null),
