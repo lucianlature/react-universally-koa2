@@ -1,8 +1,15 @@
+### Feature Repository
+
+Note: This is a feature repository of [`react-universally`](https://github.com/ctrlplusb/react-universally). Please see [`FEATURE.md`](./FEATURE.md) for more information on this repo.
+
+
 <p align='center'>
   <h1 align='center'>React, Universally</h1>
   <p align='center'><img width='150' src='https://raw.githubusercontent.com/ctrlplusb/assets/master/logos/react-universally.png' /></p>
   <p align='center'>A starter kit giving you the minimum requirements for a modern universal React application.</p>
 </p>
+
+
 
 ## TOC
 

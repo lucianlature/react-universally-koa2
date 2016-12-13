@@ -1,3 +1,9 @@
+# HTTP - Koa
+
+This is a feature repository of [`react-universally`](https://github.com/ctrlplusb/react-universally), currently built against `v10.1.1`.
+
+It provides you with a simple Koa2 base implementation.
+
 <img src="https://dl.dropboxusercontent.com/u/6396913/koa/logo.png" alt="koa middleware framework for nodejs" width="255px" />
 
   Koa is the next generation web framework for node.js, designed by the same people who created Express. 
@@ -29,7 +35,7 @@ app.use(async ctx => {
 
 ## About
 
-This is the `incubator/http/koa` branch of the `react-universally` starter kit.
+This is the `react-universally-koa2` feature repository for `react-universally` starter kit.
 
 It provides you with the build tooling and configuration you need to kick off your next universal react koa project.
 
