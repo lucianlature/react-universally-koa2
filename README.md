@@ -1,5 +1,7 @@
 ### Feature Repository
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/lucianlature/react-universally-koa2.svg)](https://greenkeeper.io/)
+
 Note: This is a feature repository of [`react-universally`](https://github.com/ctrlplusb/react-universally). Please see [`FEATURE.md`](./FEATURE.md) for more information on this repo.
 
 
